@@ -1,0 +1,59 @@
+1.# dabase create 
+create database databasename;
+
+2.# use database
+use databasename
+
+3.# only can see the data from database(now we are not allow to any other works this time only can see data)
+alter databse database_name read only = 1;
+
+when we command that we got the work permission to database
+alter database database_name read only = 0;
+
+4.# create table in database
+create table table_name (
+emplyee_id int,
+first_name varchar(50),
+last_name varchar(50),
+hourly_pay decimal(5,2),
+hire_data date
+);
+
+5.# all table data shwoing to this command
+select * from table_name
+
+6.# Rename the table name
+rename table table_name to new_table_name
+
+7.# drop the table from database 
+drop table table_name
+
+8.# new column add to the table
+alter table table_name add column_name varchar(40) or any datatype needed;
+
+9.# column name change 
+alter table table_name rename column column_name to new_column_name
+
+10.# data type change to any column
+alter table table_name modify column column_name varchar(50);
+
+11.# column position change to other column 
+alter table table_name modify column_name(which one to come first) datatype(varchar, int...) after that_column_name(which one leve her position);
+
+12.# new data insert into table
+insert into table_name values(, '', '', );
+
+13.# multiple data insert into table
+insert into table_name  (),
+                        (),
+                        (),
+                        ()
+);
+
+14.# if any column data will miss then how insert data in table
+insert into table_name(id, first_name, last_name)
+valuse(n, 'shzib', 'sheikh')
+
+
+
+
