@@ -1,0 +1,23 @@
+# Unique Constraint , where is no allow to duplicate value
+
+create table products (
+product_id int,
+product_name varchar(50) unique,
+price decimal(5,2)
+);
+
+# not add  to another comlumn in unique constraints
+alter table products add constraint unique (product_name);
+
+insert into products values
+					(1, "shampoo",20.00),
+                    (2, "shoup", 40.00),
+                    (3, "chips", 15.60),
+                    (4, "shoups", 50.67);
+
+# if we are use any conditions like this (NOT NULL) We are not allow to null field any column
+alter table products(table_name) modify price(column_name) decimale(data_type) (4,2) Not null
+
+
+# aply the previous command than are not allow to insert any null values
+insert into products values(102, 'shazib', null);
