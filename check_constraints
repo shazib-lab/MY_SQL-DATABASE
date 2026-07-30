@@ -1,0 +1,75 @@
+SQL CHECK Constraint কী?
+
+CHECK Constraint হলো এমন একটি নিয়ম, যা নিশ্চিত করে যে কোনো column-এ শুধুমাত্র নির্দিষ্ট শর্ত পূরণ করা value-ই insert বা update করা যাবে।
+
+সহজভাবে বললে,
+
+"যদি শর্ত সত্য হয়, তাহলে data save হবে। না হলে Error দেখাবে।"
+
+  CREATE TABLE table_name (
+    column_name datatype,
+    CHECK (condition)
+);
+
+Example ১: Age
+
+ধরো, একজন Employee-এর বয়স ১৮ বছরের কম হতে পারবে না।
+
+  CREATE TABLE employee (
+    employee_id INT PRIMARY KEY,
+    employee_name VARCHAR(50),
+    age INT,
+    CHECK (age >= 18)
+);
+
+Valid Insert:
+
+INSERT INTO employee
+VALUES (1, 'Shazib', 22);
+
+✔ সফল হবে।
+
+Invalid Insert:
+
+INSERT INTO employee
+VALUES (2, 'Rahim', 15);
+
+Example ২: Salary
+  CREATE TABLE employee (
+    id INT PRIMARY KEY,
+    salary DECIMAL(10,2),
+    CHECK (salary >= 0)
+);
+
+Valid:
+INSERT INTO employee
+VALUES (1, 25000);
+
+Invalid:
+
+INSERT INTO employee
+VALUES (2, -5000);
+
+
+CHECK      বনাম              NOT NULL
+
+
+CHECK                   	    NOT NULL
+Value শর্ত পূরণ করতে হবে 	    Value খালি হতে পারবে না
+salary > 0	salary           অবশ্যই থাকবে
+
+
+  Interview-এর জন্য মনে রাখো
+CHECK data validation-এর জন্য ব্যবহৃত হয়।
+Insert এবং Update—দুই ক্ষেত্রেই শর্ত যাচাই করে।
+শর্ত পূরণ না হলে Database data save করতে দেয় না।
+Data integrity বজায় রাখতে CHECK খুবই গুরুত্বপূর্ণ।
+
+CREATE TABLE students (
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    marks INT CHECK (marks BETWEEN 0 AND 100)
+);
+
+INSERT INTO students VALUES (1, 'Shazib', 85); right
+INSERT INTO students VALUES (2, 'Rahim', 120); wrong
