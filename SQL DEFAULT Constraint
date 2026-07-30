@@ -1,0 +1,72 @@
+SQL DEFAULT Constraint কী?
+DEFAULT Constraint এমন একটি নিয়ম, যা বলে দেয়—
+যদি Insert করার সময় কোনো column-এর value না দেওয়া হয়, তাহলে Database স্বয়ংক্রিয়ভাবে একটি নির্দিষ্ট value বসিয়ে দেবে।
+
+CREATE TABLE table_name (
+    column_name datatype DEFAULT value
+);
+
+Example ১: Country
+
+CREATE TABLE student (
+    student_id INT,
+    student_name VARCHAR(50),
+    country VARCHAR(50) DEFAULT 'Bangladesh'
+);
+
+Insert (Country না দিলে)
+
+INSERT INTO student (student_id, student_name)
+VALUES (1, 'Shazib');
+
+Database-এ সংরক্ষণ হবে:
+| student_id | student_name | country    |
+| ---------- | ------------ | ---------- |
+| 1          | Shazib       | Bangladesh |
+
+কারণ country-এর জন্য DEFAULT 'Bangladesh' সেট করা আছে।
+
+
+Example ২: নিজের Value দিলে
+
+INSERT INTO student
+VALUES (2, 'Rahim', 'India');
+
+| student_id | student_name | country |
+| ---------- | ------------ | ------- |
+| 2          | Rahim        | India   |
+খানে DEFAULT ব্যবহার হবে না, কারণ তুমি নিজেই value দিয়েছ।
+
+
+Interview Notes:
+
+| Constraint    | কাজ                                        |
+| ------------- | ------------------------------------------ |
+| `DEFAULT`     | Value না দিলে নির্দিষ্ট value বসায়        |
+| `NOT NULL`    | Value অবশ্যই দিতে হবে                      |
+| `CHECK`       | শর্ত পূরণ করতে হবে                         |
+| `UNIQUE`      | Duplicate value নিষিদ্ধ                    |
+| `PRIMARY KEY` | Unique + NOT NULL                          |
+| `FOREIGN KEY` | অন্য Table-এর Key-এর সাথে সম্পর্ক তৈরি করে |
+
+
+মনে রাখার সহজ ট্রিক 🎯
+DEFAULT = "কিছু না দিলে Database নিজেই একটা value দিয়ে দেবে।"
+NOT NULL = "কিছু না দিলে Error হবে।"
+উদাহরণ:
+
+CREATE TABLE employee (
+    employee_id INT PRIMARY KEY,
+    employee_name VARCHAR(50) NOT NULL,
+    country VARCHAR(50) DEFAULT 'Bangladesh',
+    salary DECIMAL(10,2) DEFAULT 25000
+);
+
+INSERT INTO employee (employee_id, employee_name)
+VALUES (1, 'Shazib');
+
+Database-এ সংরক্ষণ হবে:
+| employee_id | employee_name | country    | salary   |
+| ----------- | ------------- | ---------- | -------- |
+| 1           | Shazib        | Bangladesh | 25000.00 |
+
