@@ -1,0 +1,12 @@
+# specific row delete
+delete from employee where employee_id = 1;
+
+# update null column in database
+update employee set hourly_pay = 25 where employee_id = 2;
+
+# multiple column update
+update employee set hourly_pay= 25,
+ hire_date='2026-01-11'
+where employee_id =5 ;
+
+
