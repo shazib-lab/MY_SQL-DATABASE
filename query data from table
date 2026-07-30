@@ -1,0 +1,9 @@
+# some method of data query from database
+
+select * from employee where hire_date is null;
+select * from employee where employee_id != 1;
+select * from employee where hourly_pay >=18;
+select * from employee where first_name = 'shazib';
+select * from employee where employee_id = 5;
+select hourly_pay from employee
+select * from employee
