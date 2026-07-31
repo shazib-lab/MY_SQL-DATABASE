@@ -1,0 +1,213 @@
+Logical Operators in MySQL
+Logical Operator হলো এমন অপারেটর, যা একাধিক Condition একসাথে পরীক্ষা করতে ব্যবহৃত হয়।
+সহজ ভাষায়,
+
+Logical Operator = একাধিক শর্ত (Condition) মিলিয়ে সিদ্ধান্ত নেওয়ার অপারেটর।
+
+MySQL-এর প্রধান Logical Operators
+1. AND
+2. OR
+3. NOT
+
+****************************************************
+1. AND Operator:
+AND ব্যবহার করলে সবগুলো Condition সত্য (TRUE) হতে হবে।
+
+Syntax:
+SELECT * FROM table_name
+WHERE condition1 AND condition2;
+
+Example:
+Employee Table
+| emp_id | name  | department | salary |
+| ------ | ----- | ---------- | -----: |
+| 1      | Rahim | IT         |  50000 |
+| 2      | Karim | HR         |  40000 |
+| 3      | Rafi  | IT         |  60000 |
+| 4      | Hasan | IT         |  30000 |
+
+Query:
+
+SELECT *
+FROM Employee
+WHERE department = 'IT'
+AND salary > 40000;
+
+Output:
+| emp_id | name  | department | salary |
+| ------ | ----- | ---------- | -----: |
+| 1      | Rahim | IT         |  50000 |
+| 3      | Rafi  | IT         |  60000 |
+
+ব্যাখ্যা: যাদের Department IT এবং Salary 40000-এর বেশি, শুধু তারাই এসেছে।
+
+****************************************************************
+
+2. OR Operator:
+OR ব্যবহার করলে যেকোনো একটি Condition সত্য হলেই Result দেখাবে।
+Syntax:
+SELECT * FROM table_name
+WHERE condition1 OR condition2;
+
+Example:
+
+SELECT *
+FROM Employee
+WHERE department = 'HR'
+OR salary > 50000;
+
+Output:
+| emp_id | name  | department | salary |
+| ------ | ----- | ---------- | -----: |
+| 2      | Karim | HR         |  40000 |
+| 3      | Rafi  | IT         |  60000 |
+
+ব্যাখ্যা:
+
+Karim এসেছে কারণ সে HR Department-এ।
+Rafi এসেছে কারণ তার Salary 50000-এর বেশি।
+
+*********************************************************************
+
+3. NOT Operator
+NOT কোনো Condition-এর বিপরীত (Opposite) ফলাফল দেয়।
+
+Syntax:
+
+SELECT * FROM table_name
+WHERE NOT condition;
+
+Example:
+
+SELECT *
+FROM Employee
+WHERE NOT department = 'IT';
+
+Output:
+| emp_id | name  | department |
+| ------ | ----- | ---------- |
+| 2      | Karim | HR         |
+
+
+************************************************************************
+
+AND + OR একসাথে:
+
+SELECT *
+FROM Employee
+WHERE department = 'IT'
+AND (salary > 40000 OR name = 'Hasan');
+
+এখানে প্রথমে বন্ধনীর (()) ভিতরের অংশ Evaluate হবে।
+
+*****************************************************************************
+Operator Precedence (অগ্রাধিকার)
+
+MySQL-এ Logical Operator-এর অগ্রাধিকার:
+
+1. NOT
+2. AND
+3. OR
+
+উদাহরণ:
+SELECT *
+FROM Employee
+WHERE department = 'IT'
+OR department = 'HR'
+AND salary > 40000;
+
+MySQL এটিকে এভাবে বুঝবে:
+WHERE department = 'IT'
+OR (department = 'HR' AND salary > 40000);
+
+যদি অন্যভাবে Evaluate করতে চান, তাহলে () ব্যবহার করুন।
+
+******************************************************************************
+বাস্তব উদাহরণ
+
+Students Table:
+| id | name  | department | cgpa |
+| -: | ----- | ---------- | ---: |
+|  1 | Rahim | CSE        | 3.80 |
+|  2 | Karim | EEE        | 3.20 |
+|  3 | Rafi  | CSE        | 3.50 |
+|  4 | Hasan | BBA        | 3.90 |
+
+AND :
+
+SELECT *
+FROM Students
+WHERE department = 'CSE'
+AND cgpa >= 3.6;
+
+Result: Rahim
+
+******************************************************************************
+OR :
+
+SELECT *
+FROM Students
+WHERE department = 'EEE'
+OR cgpa >= 3.8;
+
+Result: Karim, Rahim, Hasan
+
+*******************************************************************************
+NOT :
+
+SELECT *
+FROM Students
+WHERE NOT department = 'CSE';
+
+Result: Karim, Hasan
+
+*********************************************************************************
+
+Logical Operators-এর সারসংক্ষেপ:
+| Operator | কাজ                                   | উদাহরণ                                  |
+| -------- | ------------------------------------- | --------------------------------------- |
+| `AND`    | সব শর্ত সত্য হলে Result দেয়          | `age > 18 AND city = 'Dhaka'`           |
+| `OR`     | যেকোনো একটি শর্ত সত্য হলে Result দেয় | `city = 'Dhaka' OR city = 'Chittagong'` |
+| `NOT`    | শর্তের বিপরীত Result দেয়             | `NOT age > 18`                          |
+
+
+পরীক্ষার জন্য গুরুত্বপূর্ণ প্রশ্ন
+১. Logical Operator কী?
+Logical Operator হলো এমন অপারেটর যা একাধিক শর্ত (Condition) একসাথে পরীক্ষা করে ফলাফল নির্ধারণ করে।
+
+২. AND Operator কী?
+সবগুলো Condition সত্য (TRUE) হলে Result দেয়।
+
+৩. OR Operator কী?
+যেকোনো একটি Condition সত্য (TRUE) হলেই Result দেয়।
+
+৪. NOT Operator কী?
+কোনো Condition-এর বিপরীত (NOT TRUE) ফলাফল প্রদান করে।
+
+৫. Operator Precedence কী?
+MySQL-এ Logical Operator-এর অগ্রাধিকার:
+NOT  →  AND  →  OR
+
+প্রয়োজনে () ব্যবহার করে Evaluation-এর ক্রম পরিবর্তন করা যায়।
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
