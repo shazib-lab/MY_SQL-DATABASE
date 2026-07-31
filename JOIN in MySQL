@@ -202,7 +202,52 @@ Course Table:
 | 10        | Database    |
 | 20        | Python      |
 
+Enrollment Table:
+| student_id | course_id |
+| ---------- | --------- |
+| 1          | 10        |
+| 1          | 20        |
+| 2          | 10        |
 
+
+Query:
+SELECT
+Student.name,
+Course.course_name
+FROM Enrollment
+JOIN Student
+ON Enrollment.student_id = Student.student_id
+JOIN Course
+ON Enrollment.course_id = Course.course_id;
+
+
+Output:
+| name  | course_name |
+| ----- | ----------- |
+| Rahim | Database    |
+| Rahim | Python      |
+| Karim | Database    |
+
+
+**************************************************************
+পরীক্ষার জন্য গুরুত্বপূর্ণ প্রশ্ন
+১. JOIN কী?
+JOIN হলো SQL-এর একটি Clause, যা দুই বা ততোধিক টেবিলের সম্পর্কিত ডেটা একত্রে দেখানোর জন্য ব্যবহৃত হয়।
+
+২. INNER JOIN কী?
+শুধুমাত্র দুই টেবিলে মিল থাকা (Matching) রেকর্ডগুলো দেখায়।
+
+৩. LEFT JOIN কী?
+Left Table-এর সব রেকর্ড দেখায়। Right Table-এ মিল না থাকলে NULL দেখায়।
+
+৪. RIGHT JOIN কী?
+Right Table-এর সব রেকর্ড দেখায়। Left Table-এ মিল না থাকলে NULL দেখায়।
+
+৫. CROSS JOIN কী?
+দুই টেবিলের প্রতিটি রেকর্ডকে একে অপরের সাথে মিলিয়ে Cartesian Product তৈরি করে।
+
+৬. SELF JOIN কী?
+একই টেবিলকে নিজের সাথেই JOIN করে সম্পর্কিত তথ্য বের করার পদ্ধতি।
 
 
 
