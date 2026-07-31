@@ -1,0 +1,210 @@
+JOIN in MySQL
+JOIN হলো MySQL-এর একটি Clause, যা দুই বা ততোধিক টেবিলের সম্পর্কিত (Related) ডেটা একসাথে দেখানোর জন্য ব্যবহৃত হয়।
+সহজ ভাষায়,
+JOIN = একাধিক টেবিলের ডেটা একত্রে আনার পদ্ধতি।
+
+কেন JOIN ব্যবহার করা হয়?
+ধরুন দুটি টেবিল আছে।
+
+Employee Table:
+| emp_id | name  | dept_id |
+| ------ | ----- | ------- |
+| 1      | Rahim | 101     |
+| 2      | Karim | 102     |
+| 3      | Rafi  | 103     |
+| 4      | Hasan | 102     |
+
+Department Table:
+| dept_id | dept_name |
+| ------- | --------- |
+| 101     | HR        |
+| 102     | IT        |
+| 103     | Finance   |
+
+আমরা যদি জানতে চাই:
+Rahim কোন Department-এ কাজ করে?
+তাহলে JOIN ব্যবহার করতে হবে।
+
+JOIN Syntax:
+
+SELECT column_name
+FROM table1
+JOIN table2
+ON table1.common_column = table2.common_column;
+
+Types of JOIN
+MySQL-এ প্রধানত ৫ ধরনের JOIN নিয়ে আলোচনা করা হয়:
+
+1. INNER JOIN
+2. LEFT JOIN (LEFT OUTER JOIN)
+3. RIGHT JOIN (RIGHT OUTER JOIN)
+4. CROSS JOIN
+5. SELF JOIN
+
+**********************************************************************
+1. INNER JOIN
+শুধুমাত্র দুই টেবিলে মিল থাকা (Matching) Record দেখায়।
+
+Query: 
+
+SELECT Employee.name, Department.dept_name
+FROM Employee
+INNER JOIN Department
+ON Employee.dept_id = Department.dept_id;
+
+Output:
+| name  | dept_name |
+| ----- | --------- |
+| Rahim | HR        |
+| Karim | IT        |
+| Rafi  | Finance   |
+| Hasan | IT        |
+
+✔ শুধু যাদের Department আছে তারাই এসেছে।
+
+************************************************************
+2. LEFT JOIN
+বাম (Left) টেবিলের সব Record দেখায়।
+ডান (Right) টেবিলে মিল না থাকলে NULL দেখায়।
+
+ধরি Employee টেবিলে আরও একজন আছে: 
+
+| emp_id | name   | dept_id |
+| ------ | ------ | ------- |
+| 5      | Nayeem | 105     |
+
+কিন্তু Department টেবিলে 105 নেই।
+
+Query:
+
+SELECT Employee.name, Department.dept_name
+FROM Employee
+LEFT JOIN Department
+ON Employee.dept_id = Department.dept_id;
+
+Output:
+
+| name   | dept_name |
+| ------ | --------- |
+| Rahim  | HR        |
+| Karim  | IT        |
+| Rafi   | Finance   |
+| Hasan  | IT        |
+| Nayeem | NULL      |
+
+✔ Employee-এর সব Record এসেছে।
+
+****************************************************************
+3. RIGHT JOIN
+ডান (Right) টেবিলের সব Record দেখায়।
+Employee না থাকলে NULL দেখাবে।
+
+যদি Department Table-এ থাকে:
+
+| dept_id | dept_name |
+| ------- | --------- |
+| 104     | Marketing |
+
+কিন্তু Employee নেই।
+
+Query:
+
+SELECT Employee.name, Department.dept_name
+FROM Employee
+RIGHT JOIN Department
+ON Employee.dept_id = Department.dept_id;
+
+Output:
+
+| name  | dept_name |
+| ----- | --------- |
+| Rahim | HR        |
+| Karim | IT        |
+| Hasan | IT        |
+| Rafi  | Finance   |
+| NULL  | Marketing |
+
+*****************************************************************
+4. CROSS JOIN
+দুই টেবিলের প্রতিটি Row-এর সাথে অন্য টেবিলের প্রতিটি Row মিলিয়ে দেখায়।
+যদি
+Employee = 4 Row
+
+Department = 3 Row
+
+তাহলে Result হবে 
+4 × 3 = 12 Rows 
+
+Query:
+SELECT Employee.name, Department.dept_name
+FROM Employee
+CROSS JOIN Department;
+
+***********************************************************************
+5. SELF JOIN
+একই টেবিলকে নিজের সাথেই JOIN করা হয়।
+উদাহরণ:
+
+Employee Table:
+| emp_id | name  | manager_id |
+| ------ | ----- | ---------- |
+| 1      | Rahim | NULL       |
+| 2      | Karim | 1          |
+| 3      | Rafi  | 1          |
+
+Query:
+SELECT
+e1.name AS Employee,
+e2.name AS Manager
+FROM Employee e1
+LEFT JOIN Employee e2
+ON e1.manager_id = e2.emp_id;
+
+Output:
+| Employee | Manager |
+| -------- | ------- |
+| Rahim    | NULL    |
+| Karim    | Rahim   |
+| Rafi     | Rahim   |
+
+******************************************************************************
+JOIN-এর চিত্র:
+
+Employee                 Department
+
++---------+             +-----------+
+| dept_id | --------->  | dept_id   |
++---------+             +-----------+
+
+JOIN-এর সময় সাধারণত Primary Key এবং Foreign Key ব্যবহার করা হয়।
+
+INNER vs LEFT vs RIGHT JOIN
+
+| INNER JOIN           | LEFT JOIN                       | RIGHT JOIN                     |
+| -------------------- | ------------------------------- | ------------------------------ |
+| শুধু Matching Record | Left Table-এর সব Record         | Right Table-এর সব Record       |
+| মিল না থাকলে বাদ     | Right Table-এ মিল না থাকলে NULL | Left Table-এ মিল না থাকলে NULL |
+
+
+********************************************************************
+বাস্তব উদাহরণ
+Student Table:
+বাস্তব উদাহরণ
+| student_id | name  |
+| ---------- | ----- |
+| 1          | Rahim |
+| 2          | Karim |
+
+
+Course Table:
+| course_id | course_name |
+| --------- | ----------- |
+| 10        | Database    |
+| 20        | Python      |
+
+
+
+
+
+
+
