@@ -1,0 +1,118 @@
+MySQL-এ Primary Key কী?
+Primary Key হলো একটি column বা একাধিক column-এর সমন্বয়, যা একটি টেবিলের প্রতিটি row-কে **অদ্বিতীয় (Unique)**ভাবে শনাক্ত করে।
+
+সহজ ভাষায়,
+Primary Key = প্রতিটি রেকর্ডের ইউনিক পরিচয়পত্র (ID)
+
+# Primary Key-এর বৈশিষ্ট্য
+1.Unique হতে হবে
+  একই Primary Key দুইটি row-তে থাকতে পারবে না।
+2.NULL হতে পারবে না
+  প্রতিটি row-তে অবশ্যই একটি value থাকতে হবে।
+3.একটি টেবিলে মাত্র একটি Primary Key থাকে
+  তবে সেই Primary Key একাধিক column নিয়ে গঠিত হতে পারে (Composite Primary Key)।
+4.Automatic Index তৈরি হয়
+  Primary Key তৈরি করলে MySQL নিজেই Index তৈরি করে, ফলে Search দ্রুত হয়।
+
+উদাহরণ :
+ধরো একটি Student টেবিল আছে।
+| Student_ID | Name  | Department |
+| ---------- | ----- | ---------- |
+| 101        | Rahim | CSE        |
+| 102        | Karim | EEE        |
+| 103        | Rafi  | BBA        |
+
+এখানে Student_ID হলো Primary Key।
+
+# Primary Key তৈরি করার নিয়ম
+    Method 1: Table তৈরির সময়
+** CREATE TABLE Student(
+    student_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    department VARCHAR(50)
+);
+
+Method 2: Constraint ব্যবহার করে.
+CREATE TABLE Student(
+    student_id INT,
+    name VARCHAR(100),
+    department VARCHAR(50),
+    PRIMARY KEY(student_id)
+);
+
+Method 3: পরে Primary Key যোগ করা
+ALTER TABLE Student
+ADD PRIMARY KEY(student_id);
+
+## Auto Increment Primary Key
+    যদি ID নিজে নিজে বাড়তে থাকে,
+CREATE TABLE Student(
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    department VARCHAR(50)
+);
+
+## ডেটা Insert :
+INSERT INTO Student(name, department)
+VALUES
+('Rahim','CSE'),
+('Karim','EEE'),
+('Rafi','BBA');
+
+| student_id | name  | department |
+| ---------- | ----- | ---------- |
+| 1          | Rahim | CSE        |
+| 2          | Karim | EEE        |
+| 3          | Rafi  | BBA        |
+
+** Primary Key Drop করা
+ALTER TABLE Student
+DROP PRIMARY KEY;
+
+## Primary Key দেখার উপায়
+DESC Student; or SHOW CREATE TABLE Student;
+
+Primary Key              বনাম               Unique Key
+| Primary Key              |       Unique Key                                                 |
+| ------------------------ | ---------------------------------------------------------------- |
+| মাত্র ১টি হতে পারে         |       একাধিক হতে পারে                                            |
+| NULL অনুমোদিত নয়        |      সাধারণত একটি বা একাধিক NULL (MySQL-এর নিয়ম অনুযায়ী) থাকতে পারে |
+| প্রতিটি row-এর পরিচয়      |       শুধু Duplicate আটকায়                                        |
+| Automatic Index তৈরি হয়  |      এটিও Index তৈরি করে                                          |
+
+## বাস্তব উদাহরণ::
+CREATE TABLE Employee(
+    emp_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
+    salary DECIMAL(10,2)
+);
+
+ডেটা যোগ করা:
+INSERT INTO Employee(name,email,salary)
+VALUES
+('Rahim','rahim@gmail.com',25000),
+('Karim','karim@gmail.com',30000),
+('Rafi','rafi@gmail.com',28000);
+
+| emp_id | name  | email                                     | salary |
+| -----: | ----- | ----------------------------------------- | -----: |
+|      1 | Rahim | [rahim@gmail.com](mailto:rahim@gmail.com) |  25000 |
+|      2 | Karim | [karim@gmail.com](mailto:karim@gmail.com) |  30000 |
+|      3 | Rafi  | [rafi@gmail.com](mailto:rafi@gmail.com)   |  28000 |
+
+
+এখানে:
+
+emp_id → Primary Key (প্রতিটি কর্মচারীর ইউনিক পরিচয়)
+email → Unique Key (দুইজনের একই ইমেইল হতে পারবে না)
+
+পরীক্ষার জন্য গুরুত্বপূর্ণ পয়েন্ট
+
+* Primary Key একটি টেবিলের প্রতিটি row-কে ইউনিকভাবে শনাক্ত করে।
+* Primary Key-এর মান Unique এবং NOT NULL হতে হবে।
+* একটি টেবিলে শুধুমাত্র একটি Primary Key থাকতে পারে।
+* Primary Key-এর উপর MySQL স্বয়ংক্রিয়ভাবে Index তৈরি করে।
+* AUTO_INCREMENT ব্যবহার করলে Primary Key-এর মান স্বয়ংক্রিয়ভাবে বৃদ্ধি পায়।
+* একাধিক কলাম নিয়ে Composite Primary Key তৈরি করা যায়।
+
