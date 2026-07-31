@@ -1,0 +1,142 @@
+AUTO_INCREMENT in MySQL
+AUTO_INCREMENT হলো MySQL-এর একটি Attribute, যা কোনো INTEGER ধরনের কলামের মান স্বয়ংক্রিয়ভাবে ১ করে বাড়িয়ে দেয়।
+এটি সাধারণত Primary Key-এর সাথে ব্যবহার করা হয় যাতে প্রতিটি নতুন রেকর্ডের জন্য ইউনিক ID নিজে থেকেই তৈরি হয়।
+
+কেন AUTO_INCREMENT ব্যবহার করা হয়?
+ধরুন আপনি একটি Employee টেবিলে নতুন কর্মচারী যোগ করছেন।
+
+AUTO_INCREMENT ছাড়া:
+INSERT INTO Employee
+VALUES(1,'Rahim',25000);
+
+INSERT INTO Employee
+VALUES(2,'Karim',30000);
+
+INSERT INTO Employee
+VALUES(3,'Rafi',28000);
+প্রতিবার আপনাকে ID লিখতে হবে।
+*************************************************************
+** AUTO_INCREMENT থাকলে:
+INSERT INTO Employee(name,salary)
+VALUES('Rahim',25000);
+
+INSERT INTO Employee(name,salary)
+VALUES('Karim',30000);
+
+INSERT INTO Employee(name,salary)
+VALUES('Rafi',28000);
+MySQL নিজেই ID তৈরি করবে।
+*************************************************************
+Syntax: 
+CREATE TABLE Employee(
+    emp_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    salary DECIMAL(10,2)
+);
+
+Example:
+Table:
+CREATE TABLE Student(
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    department VARCHAR(50)
+);
+
+Insert Data:
+INSERT INTO Student(name,department)
+VALUES
+('Rahim','CSE'),
+('Karim','EEE'),
+('Rafi','BBA');
+
+Result:
+| student_id | name  | department |
+| ---------- | ----- | ---------- |
+| 1          | Rahim | CSE        |
+| 2          | Karim | EEE        |
+| 3          | Rafi  | BBA        |
+
+student_id নিজে থেকেই 1, 2, 3 হয়েছে।
+
+আরও একটি Record Insert:
+INSERT INTO Student(name,department)
+VALUES('Hasan','ICE');
+
+Result:
+| student_id | name  |
+| ---------- | ----- |
+| 1          | Rahim |
+| 2          | Karim |
+| 3          | Rafi  |
+| 4          | Hasan |
+
+যদি একটি Record Delete করি:
+DELETE FROM Student
+WHERE student_id = 2;
+
+এখন Table:
+| student_id | name  |
+| ---------- | ----- |
+| 1          | Rahim |
+| 3          | Rafi  |
+| 4          | Hasan |
+
+আবার Insert করি:
+INSERT INTO Student(name)
+VALUES('Nayeem');
+
+Result:
+| student_id | name   |
+| ---------- | ------ |
+| 1          | Rahim  |
+| 3          | Rafi   |
+| 4          | Hasan  |
+| 5          | Nayeem |
+
+খেয়াল করুন: 2 আবার ব্যবহার হয়নি। AUTO_INCREMENT সাধারণত আগের সর্বোচ্চ মানের পরের সংখ্যা ব্যবহার করে।
+
+************************************************************************
+Starting Value পরিবর্তন,
+যদি চান ID 100 থেকে শুরু হোক:
+
+ALTER TABLE Student
+AUTO_INCREMENT = 100;
+
+পরবর্তী Insert:
+INSERT INTO Student(name)
+VALUES('Sakib');
+
+Result:
+| student_id | name  |
+| ---------- | ----- |
+| 100        | Sakib |
+
+AUTO_INCREMENT-এর নিয়ম:
+
+* শুধুমাত্র INTEGER টাইপের (TINYINT, SMALLINT, INT, BIGINT ইত্যাদি) কলামে ব্যবহার করা যায়।
+* সাধারণত PRIMARY KEY বা UNIQUE কলামের সাথে ব্যবহার করা হয়।
+* একই টেবিলে মাত্র একটি AUTO_INCREMENT কলাম থাকতে পারে।
+* প্রতিটি নতুন রেকর্ডে মান স্বয়ংক্রিয়ভাবে বৃদ্ধি পায়।
+
+AUTO_INCREMENT বনাম Primary Key:
+| Primary Key                         | AUTO_INCREMENT                          |
+| ----------------------------------- | --------------------------------------- |
+| প্রতিটি Row-কে ইউনিকভাবে শনাক্ত করে | মান স্বয়ংক্রিয়ভাবে তৈরি করে           |
+| Unique এবং NOT NULL                 | শুধু সংখ্যা স্বয়ংক্রিয়ভাবে বাড়ায়    |
+| AUTO_INCREMENT ছাড়াও থাকতে পারে    | সাধারণত Primary Key-এর সাথে ব্যবহৃত হয় |
+
+
+পরীক্ষার জন্য গুরুত্বপূর্ণ প্রশ্ন:
+
+১. AUTO_INCREMENT কী?
+AUTO_INCREMENT হলো MySQL-এর একটি Attribute, যা নতুন রেকর্ড যোগ করার সময় Integer কলামের মান স্বয়ংক্রিয়ভাবে বৃদ্ধি করে।
+
+২. AUTO_INCREMENT কেন ব্যবহার করা হয়?
+
+ইউনিক ID স্বয়ংক্রিয়ভাবে তৈরি করতে।
+ম্যানুয়ালি ID লেখার প্রয়োজন হয় না।
+Duplicate ID হওয়ার ঝুঁকি কমে।
+
+৩. AUTO_INCREMENT-এর সাথে সবচেয়ে বেশি কোন Constraint ব্যবহার করা হয়?
+PRIMARY KEY।
+
