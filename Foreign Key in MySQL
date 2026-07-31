@@ -1,0 +1,262 @@
+Foreign Key in MySQL
+Foreign Key হলো এমন একটি Column (বা একাধিক Column), যা অন্য একটি টেবিলের Primary Key বা Unique Key-কে রেফারেন্স করে।
+
+সহজ ভাষায়,
+Foreign Key = দুটি টেবিলের মধ্যে সম্পর্ক (Relationship) তৈরি করার জন্য ব্যবহৃত Key।
+
+কেন Foreign Key ব্যবহার করা হয়?
+
+ধরুন দুটি টেবিল আছে।
+Student Table :
+| student_id | name  |
+| ---------- | ----- |
+| 101        | Rahim |
+| 102        | Karim |
+| 103        | Rafi  |
+
+Course Table:
+| course_id | course_name |
+| --------- | ----------- |
+| 1         | Database    |
+| 2         | Python      |
+
+একজন Student অনেক Course নিতে পারে।
+তাই Enrollment নামে আরেকটি টেবিল তৈরি করা হয়।
+
+Enrollment Table:
+| enroll_id | student_id | course_id |
+| --------- | ---------- | --------- |
+| 1         | 101        | 1         |
+| 2         | 101        | 2         |
+| 3         | 102        | 1         |
+
+এখানে,
+student_id → Student টেবিলের Primary Key-কে রেফারেন্স করছে।
+course_id → Course টেবিলের Primary Key-কে রেফারেন্স করছে।
+এগুলোই Foreign Key।
+
+
+Foreign Key-এর বৈশিষ্ট্য :
+
+* দুটি টেবিলের মধ্যে সম্পর্ক তৈরি করে।
+* Referenced value অবশ্যই Parent Table-এ থাকতে হবে।
+* Invalid Data Insert হতে দেয় না।
+* Data Integrity বজায় রাখে।
+* একাধিক Foreign Key থাকতে পারে।
+
+***************************************************************
+Parent Table:
+CREATE TABLE Student(
+    student_id INT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+Child Table:
+CREATE TABLE Enrollment(
+    enroll_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    FOREIGN KEY(student_id)
+    REFERENCES Student(student_id)
+);
+
+এখানে,
+Student = Parent Table
+Enrollment = Child Table
+student_id = Foreign Key
+
+Data Insert:
+Parent Table,
+
+INSERT INTO Student
+VALUES
+(101,'Rahim'),
+(102,'Karim');
+
+Child Table:
+
+INSERT INTO Enrollment(student_id)
+VALUES
+(101),
+(102);
+
+Invalid Insert:
+INSERT INTO Enrollment(student_id)
+VALUES(999);
+
+❌ Error হবে। কারণ 999 Student টেবিলে নেই। 
+উদাহরণ:
+Cannot add or update a child row:
+a foreign key constraint fails.
+
+**************************************************************
+Multiple Foreign Keys:
+
+CREATE TABLE Enrollment(
+    enroll_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+
+    FOREIGN KEY(student_id)
+    REFERENCES Student(student_id),
+
+    FOREIGN KEY(course_id)
+    REFERENCES Course(course_id)
+);
+
+Foreign Key Drop: 
+
+ALTER TABLE Enrollment
+DROP FOREIGN KEY enrollment_ibfk_1;
+
+Foreign Key-এর নাম দেখতে:
+SHOW CREATE TABLE Enrollment;
+
+ON DELETE CASCADE:
+যদি Parent Table-এর Record Delete করলে Child Table-এর সম্পর্কিত Record-ও Delete করতে চান:
+
+CREATE TABLE Enrollment(
+    enroll_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+
+    FOREIGN KEY(student_id)
+    REFERENCES Student(student_id)
+    ON DELETE CASCADE
+);
+
+উদাহরণ:
+Student Table:
+| student_id | name  |
+| ---------- | ----- |
+| 101        | Rahim |
+| 102        | Karim |
+
+Enrollment Table:
+| enroll_id | student_id |
+| --------- | ---------- |
+| 1         | 101        |
+| 2         | 101        |
+| 3         | 102        |
+
+যদি চালান:
+DELETE FROM Student
+WHERE student_id = 101;
+
+Result:
+Student Table:
+| student_id | name  |
+| ---------- | ----- |
+| 102        | Karim |
+
+Enrollment Table:
+| enroll_id | student_id |
+| --------- | ---------- |
+| 3         | 102        |
+
+student_id = 101 সম্পর্কিত সব Enrollment স্বয়ংক্রিয়ভাবে মুছে যাবে।
+
+***********************************************************************************
+ON DELETE SET NULL:
+Parent Record Delete হলে Foreign Key-কে NULL করতে চাইলে:
+
+FOREIGN KEY(student_id)
+REFERENCES Student(student_id)
+ON DELETE SET NULL
+
+ক্ষেত্রে student_id কলামে NULL অনুমোদিত (NULL allowed) হতে হবে।
+
+        Foreign Key                              বনাম                   Primary Key
+                                                                        
+| -------------------------------------------      | -------------------------------------------------------- |
+| টেবিলের প্রতিটি Row-কে ইউনিকভাবে শনাক্ত করে |            অন্য টেবিলের Primary Key-কে রেফারেন্স করে                |
+| Unique এবং NOT NULL                         |          Duplicate হতে পারে, `NULL`-ও হতে পারে (যদি অনুমোদিত হয়) |
+| একটি টেবিলে মাত্র একটি Primary Key          |           একাধিক Foreign Key থাকতে পারে                            |
+| Parent Table-এ থাকে                         |          Child Table-এ থাকে                                       |
+
+***********************************************************************************************
+
+বাস্তব উদাহরণ:
+CREATE TABLE Department(
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(100)
+);
+
+CREATE TABLE Employee(
+    emp_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    dept_id INT,
+
+    FOREIGN KEY(dept_id)
+    REFERENCES Department(dept_id)
+);
+
+এখানে:
+Department.dept_id → Primary Key
+Employee.dept_id → Foreign Key
+
+একটি Department-এর অধীনে অনেক Employee থাকতে পারে।
+
+**************************************************************************
+পরীক্ষার জন্য গুরুত্বপূর্ণ প্রশ্ন
+
+১. Foreign Key কী?
+Foreign Key হলো এমন একটি Key, যা একটি টেবিলের Column-কে অন্য টেবিলের Primary Key বা Unique Key-এর সাথে যুক্ত করে সম্পর্ক (Relationship) তৈরি করে।
+
+২. Foreign Key কেন ব্যবহার করা হয়?
+
+দুটি টেবিলের মধ্যে সম্পর্ক তৈরি করতে।
+Invalid Data Insert প্রতিরোধ করতে।
+Referential Integrity বজায় রাখতে।
+
+৩. Parent Table ও Child Table কী?
+
+Parent Table: যে টেবিলের Primary Key-কে রেফারেন্স করা হয়।
+Child Table: যে টেবিলে Foreign Key থাকে এবং Parent Table-এর Key-কে রেফারেন্স করে।
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
