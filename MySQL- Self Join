@@ -1,0 +1,180 @@
+MySQL-এ Self Join (বাংলায়)
+Self Join কী?
+* Self Join হলো এমন একটি Join যেখানে একই টেবিলকে নিজের সাথেই Join করা হয়।
+* এটি ব্যবহার করা হয় যখন একই টেবিলের দুইটি রেকর্ডের মধ্যে সম্পর্ক (Relationship) বের করতে হয়।
+* মনে রাখবেন: Self Join করার সময় একই টেবিলকে দুটি আলাদা নামে (Alias) ব্যবহার করতে হয়, যেমন e1 এবং e2। 
+
+Syntax
+SELECT a.column_name, b.column_name
+FROM table_name AS a
+JOIN table_name AS b
+ON a.common_column = b.common_column;
+
+উদাহরণ:
+ধরি employee নামে একটি টেবিল আছে। 
+
+| emp_id | emp_name | manager_id |
+| ------ | -------- | ---------- |
+| 1      | Rahim    | NULL       |
+| 2      | Karim    | 1          |
+| 3      | Ali      | 1          |
+| 4      | Hasan    | 2          |
+
+এখানে,
+manager_id হলো সেই কর্মচারীর emp_id যিনি তার ম্যানেজার।
+
+*******************************************************************
+Self Join ব্যবহার করে কর্মচারী ও তার ম্যানেজারের নাম বের করা :
+
+SELECT
+    e1.emp_name AS Employee,
+    e2.emp_name AS Manager
+FROM employee e1
+JOIN employee e2
+ON e1.manager_id = e2.emp_id;
+
+ফলাফল:
+| Employee | Manager |
+| -------- | ------- |
+| Karim    | Rahim   |
+| Ali      | Rahim   |
+| Hasan    | Karim   |
+
+Alias কেন ব্যবহার করা হয়?
+একই টেবিলকে দুইবার ব্যবহার করার জন্য Alias দেওয়া হয়।
+
+employee e1
+employee e2
+e1 → Employee
+e2 → Manager
+
+এতে MySQL বুঝতে পারে কোন কলামটি কোন টেবিলের (Alias-এর)।
+
+*****************************************************************************
+LEFT SELF JOIN
+
+যদি ম্যানেজার না থাকলেও (যেমন CEO) তাকে দেখাতে চান, তাহলে LEFT JOIN ব্যবহার করতে হবে।
+
+SELECT
+    e1.emp_name AS Employee,
+    e2.emp_name AS Manager
+FROM employee e1
+LEFT JOIN employee e2
+ON e1.manager_id = e2.emp_id;
+
+ফলাফল:
+| Employee | Manager |
+| -------- | ------- |
+| Rahim    | NULL    |
+| Karim    | Rahim   |
+| Ali      | Rahim   |
+| Hasan    | Karim   |
+
+Self Join-এর ব্যবহার :
+
+* Employee এবং Manager-এর সম্পর্ক দেখাতে।
+* Parent এবং Child সম্পর্ক বের করতে।
+* একই টেবিলের দুইটি রেকর্ড তুলনা করতে।
+* Organization Chart তৈরি করতে।
+
+সংক্ষেপে:
+| বিষয়     | ব্যাখ্যা                                        |
+| --------- | ----------------------------------------------- |
+| Self Join | একই টেবিলকে নিজের সাথেই Join করা                |
+| Alias     | একই টেবিলকে আলাদা নামে ব্যবহার করা (`e1`, `e2`) |
+| ব্যবহার   | Employee-Manager, Parent-Child সম্পর্ক          |
+
+
+
+পরীক্ষায় আসতে পারে: 
+
+প্রশ্ন: Self Join কী?
+উত্তর:
+Self Join হলো এমন একটি Join যেখানে একই টেবিলকে নিজের সাথেই Join করা হয়। এটি সাধারণত একই টেবিলের রেকর্ডগুলোর মধ্যে সম্পর্ক (যেমন Employee ও Manager) নির্ণয় করতে ব্যবহৃত হয়। Self Join করার সময় টেবিলের জন্য Alias ব্যবহার করা হয়।
+
+উদাহরণ:
+SELECT
+    e1.emp_name AS Employee,
+    e2.emp_name AS Manager
+FROM employee e1
+JOIN employee e2
+ON e1.manager_id = e2.emp_id;
+
+মনে রাখুন (MCQ-এর জন্য)
+✅ Self Join-এ একই টেবিল দুইবার ব্যবহার করা হয়।
+✅ Alias (e1, e2) ব্যবহার করা অত্যাবশ্যক।
+✅ Employee–Manager বা Parent–Child সম্পর্ক দেখাতে Self Join সবচেয়ে বেশি ব্যবহৃত হয়।
+✅ Self Join আলাদা কোনো Join টাইপ নয়; এটি একই টেবিলের ওপর INNER JOIN, LEFT JOIN ইত্যাদি ব্যবহার করার একটি কৌশল।
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
