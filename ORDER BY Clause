@@ -1,0 +1,187 @@
+MySQL-এ ORDER BY Clause (বাংলায়)
+ORDER BY Clause কী?
+ORDER BY Clause ব্যবহার করা হয় টেবিলের ডেটাকে নির্দিষ্ট কলামের ভিত্তিতে সাজানোর (Sort করার) জন্য।
+ডিফল্টভাবে ORDER BY Ascending (ASC) অর্থাৎ ছোট থেকে বড় বা A থেকে Z ক্রমে সাজায়।
+
+Syntax:
+SELECT column_name
+FROM table_name
+ORDER BY column_name;
+
+অথবা:
+SELECT column_name
+FROM table_name
+ORDER BY column_name ASC;
+
+অথবা:
+SELECT column_name
+FROM table_name
+ORDER BY column_name DESC;
+
+উদাহরণ টেবিল: students
+| id | name  | marks |
+| -- | ----- | ----- |
+| 1  | Ali   | 75    |
+| 2  | Karim | 90    |
+| 3  | Rahim | 65    |
+| 4  | Amina | 85    |
+
+***********************************************************
+
+১. Ascending Order (ASC)
+ডেটাকে ছোট থেকে বড় বা A থেকে Z ক্রমে সাজায়।
+
+SELECT * FROM students
+ORDER BY marks ASC;
+ফলাফল:
+| id | name  | marks |
+| -- | ----- | ----- |
+| 3  | Rahim | 65    |
+| 1  | Ali   | 75    |
+| 4  | Amina | 85    |
+| 2  | Karim | 90    |
+
+ASC না লিখলেও MySQL ডিফল্টভাবে Ascending Order ব্যবহার করে।
+
+**********************************************************************
+২. Descending Order (DESC)
+ডেটাকে বড় থেকে ছোট বা Z থেকে A ক্রমে সাজায়।
+
+SELECT * FROM students
+ORDER BY marks DESC;
+ফলাফল:
+| id | name  | marks |
+| -- | ----- | ----- |
+| 2  | Karim | 90    |
+| 4  | Amina | 85    |
+| 1  | Ali   | 75    |
+| 3  | Rahim | 65    |
+
+************************************************************************
+৩. নাম অনুযায়ী সাজান
+
+SELECT * FROM students
+ORDER BY name ASC;
+ফলাফল:
+| name  |
+| ----- |
+| Ali   |
+| Amina |
+| Karim |
+| Rahim |
+
+****************************************************************************
+৪. একাধিক কলাম অনুযায়ী Sort
+প্রথমে department অনুযায়ী, তারপর marks অনুযায়ী সাজানো।
+
+SELECT *
+FROM students
+ORDER BY department ASC, marks DESC;
+
+এখানে:
+প্রথমে department A → Z ক্রমে সাজাবে।
+একই department-এর মধ্যে marks বেশি থেকে কম ক্রমে সাজাবে।
+
+**********************************************************************************
+৫. WHERE এর সাথে ORDER BY
+SELECT *
+FROM students
+WHERE marks >= 70
+ORDER BY marks DESC;
+
+এখানে প্রথমে ৭০ বা তার বেশি নম্বরের শিক্ষার্থীদের বের করবে, তারপর বেশি নম্বর থেকে কম নম্বর অনুযায়ী সাজাবে।
+
+ORDER BY-এর ব্যবহার:
+
+* নাম অনুযায়ী সাজাতে
+* নম্বর অনুযায়ী সাজাতে
+* বেতন অনুযায়ী সাজাতে
+* তারিখ অনুযায়ী নতুন বা পুরনো ডেটা দেখাতে
+* রিপোর্ট তৈরি করতে 
+****************************************************************
+সংক্ষেপে:
+প্রশ্ন: ORDER BY Clause কী?
+
+উত্তর:
+MySQL-এ ORDER BY Clause ব্যবহার করা হয় একটি টেবিলের রেকর্ডকে নির্দিষ্ট কলামের মান অনুযায়ী সাজানোর (Sort করার) জন্য। এটি Ascending (ASC) বা Descending (DESC) ক্রমে ডেটা প্রদর্শন করতে পারে। ASC হলো ডিফল্ট ক্রম।
+
+উদাহরণ:
+-- ছোট থেকে বড় (Ascending)
+SELECT * FROM students
+ORDER BY marks ASC;
+
+-- বড় থেকে ছোট (Descending)
+SELECT * FROM students
+ORDER BY marks DESC;
+
+মনে রাখবেন:
+* ASC = Ascending (ছোট → বড় / A → Z)
+* DESC = Descending (বড় → ছোট / Z → A)
+* ORDER BY সাধারণত SELECT স্টেটমেন্টের শেষে লেখা হয়।
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
