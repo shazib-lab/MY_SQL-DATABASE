@@ -1,0 +1,127 @@
+MySQL-এ ROLLUP কী?
+ROLLUP হলো GROUP BY-এর একটি বিশেষ Feature, যা প্রতিটি Group-এর Summary (Subtotal) এবং সবশেষে Grand Total দেখায়।
+অর্থাৎ, GROUP BY যেখানে শুধু Group অনুযায়ী ফলাফল দেখায়, ROLLUP সেখানে অতিরিক্ত মোট (Total) হিসাবও দেখায়।
+
+সংজ্ঞা :
+ROLLUP হলো GROUP BY-এর একটি Extension, যা Group-wise Summary এবং সর্বশেষে Grand Total প্রদর্শন করে।
+
+Syntax:
+
+SELECT column_name, aggregate_function(column_name)
+FROM table_name
+GROUP BY column_name WITH ROLLUP;
+
+উদাহরণ
+ধরি employee টেবিল:
+| id | department | salary |
+| -- | ---------- | ------ |
+| 1  | HR         | 30000  |
+| 2  | HR         | 35000  |
+| 3  | IT         | 50000  |
+| 4  | IT         | 45000  |
+| 5  | Sales      | 40000  |
+
+
+GROUP BY:
+
+SELECT department, SUM(salary) AS total_salary
+FROM employee
+GROUP BY department;
+
+Output :
+| department | total_salary |
+| ---------- | -----------: |
+| HR         |        65000 |
+| IT         |        95000 |
+| Sales      |        40000 |
+
+
+**********************************************************
+GROUP BY WITH ROLLUP :::
+
+SELECT department, SUM(salary) AS total_salary
+FROM employee
+GROUP BY department WITH ROLLUP;
+
+Output::
+| department | total_salary |
+| ---------- | -----------: |
+| HR         |        65000 |
+| IT         |        95000 |
+| Sales      |        40000 |
+| NULL       |       200000 |
+
+এখানে শেষের NULL Row-টি Grand Total বোঝায়।
+
+********************************************************************
+একাধিক Column-এ ROLLUP: 
+
+SELECT department, designation, SUM(salary)
+FROM employee
+GROUP BY department, designation WITH ROLLUP;
+
+Output (উদাহরণ):
+| department | designation | SUM(salary) |
+| ---------- | ----------- | ----------: |
+| HR         | Manager     |       50000 |
+| HR         | Officer     |       30000 |
+| HR         | NULL        |       80000 |
+| IT         | Developer   |       70000 |
+| IT         | Tester      |       30000 |
+| IT         | NULL        |      100000 |
+| NULL       | NULL        |      180000 |
+
+
+এখানে:
+
+* HR, NULL = HR বিভাগের মোট বেতন (Subtotal)
+* IT, NULL = IT বিভাগের মোট বেতন (Subtotal)
+* NULL, NULL = সব বিভাগের মোট বেতন (Grand Total)
+
+
+*************************************************************************
+ROLLUP-এর সুবিধা:
+
+* রিপোর্ট তৈরি করা সহজ হয়।
+* প্রতিটি Group-এর মোট (Subtotal) পাওয়া যায়।
+* সব Group-এর Grand Total একসাথে দেখা যায়।
+* আলাদা Query লিখতে হয় না।
+
+GROUP BY এবং ROLLUP-এর পার্থক্য:
+
+| GROUP BY                         | ROLLUP                                |
+| -------------------------------- | ------------------------------------- |
+| শুধু Group অনুযায়ী ফলাফল দেখায় | Group + Subtotal + Grand Total দেখায় |
+| মোট (Total) দেখায় না            | মোট (Total) দেখায়                    |
+| সাধারণ রিপোর্টের জন্য            | Summary রিপোর্টের জন্য                |
+
+
+
+Interview-এর জন্য সংক্ষিপ্ত উত্তর
+প্রশ্ন: ROLLUP কী?
+উত্তর:
+ROLLUP হলো GROUP BY-এর একটি Extension, যা প্রতিটি Group-এর Summary (Subtotal) এবং সবশেষে Grand Total প্রদর্শন করে।
+
+মনে রাখার শর্টকাট
+* GROUP BY = শুধু Group
+* ROLLUP = Group + Total
+* ROLLUP-এর শেষের NULL Row = Grand Total
+
+উদাহরণ :
+SELECT department, SUM(salary)
+FROM employee
+GROUP BY department WITH ROLLUP;
+
+ফলাফল:
+
+HR → 65000
+IT → 95000
+Sales → 40000
+NULL → 200000 (Grand Total)
+
+
+
+
+************************************************************************************************
+
+
