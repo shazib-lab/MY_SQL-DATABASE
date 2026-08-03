@@ -1,0 +1,105 @@
+MySQL-এ ON DELETE SET NULL কী?
+ON DELETE SET NULL হলো Foreign Key Constraint-এর একটি Action।
+যখন Parent Table থেকে কোনো Row Delete করা হয়, তখন Child Table-এর Foreign Key-এর মান NULL হয়ে যায়।
+
+অর্থাৎ, Child Table-এর Row Delete হয় না, শুধু Foreign Key-এর মান NULL হয়ে যায়।
+
+সংজ্ঞা :
+ON DELETE SET NULL এমন একটি Foreign Key Action, যেখানে Parent Table-এর Row Delete হলে Child Table-এর Foreign Key স্বয়ংক্রিয়ভাবে NULL হয়ে যায়।
+
+
+Syntax;
+
+CREATE TABLE child_table (
+    id INT PRIMARY KEY,
+    parent_id INT,
+    FOREIGN KEY (parent_id)
+    REFERENCES parent_table(id)
+    ON DELETE SET NULL
+);
+
+শর্ত: Foreign Key Column-টি অবশ্যই NULL গ্রহণ করতে পারবে (অর্থাৎ NOT NULL হওয়া যাবে না)।
+
+উদাহরণ :
+Parent Table = Department 
+| dept_id | dept_name |
+| ------- | --------- |
+| 1       | HR        |
+| 2       | IT        |
+
+Child Table = Employee
+
+| emp_id | name  | dept_id |
+| ------ | ----- | ------- |
+| 101    | Rahim | 1       |
+| 102    | Karim | 2       |
+| 103    | Nila  | 1       |
+
+
+oreign Key:
+
+FOREIGN KEY (dept_id)
+REFERENCES department(dept_id)
+ON DELETE SET NULL
+
+
+*************************************************************
+এখন Parent Table থেকে HR Delete করি 
+
+DELETE FROM department
+WHERE dept_id = 1;
+
+Delete করার পরে
+Department: 
+
+| dept_id | dept_name |
+| ------- | --------- |
+| 2       | IT        |
+
+Employee TABLE :
+| emp_id | name  | dept_id |
+| ------ | ----- | ------- |
+| 101    | Rahim | NULL    |
+| 102    | Karim | 2       |
+| 103    | Nila  | NULL    |
+
+এখানে Rahim এবং Nila-এর Record Delete হয়নি। শুধু dept_id-এর মান NULL হয়েছে।
+
+********************************************************************
+কখন ব্যবহার করা হয়?
+ON DELETE SET NULL ব্যবহার করা হয় যখন Child Record রাখা দরকার, কিন্তু Parent Record Delete হলেও তার সাথে সম্পর্ক (Relationship) সরিয়ে দিতে চান।
+
+উদাহরণ:
+
+* Employee ↔ Department
+* Student ↔ Advisor
+* Product ↔ Category
+
+
+***********************************************************************
+
+অন্যান্য ON DELETE Action-এর সাথে তুলনা:
+| Action                | কী হয়?                                           |
+| --------------------- | ------------------------------------------------- |
+| `ON DELETE CASCADE`   | Parent Delete হলে Child Record-ও Delete হয়       |
+| `ON DELETE SET NULL`  | Parent Delete হলে Child-এর Foreign Key `NULL` হয় |
+| `ON DELETE RESTRICT`  | Parent Delete করতে দেয় না যদি Child থাকে         |
+| `ON DELETE NO ACTION` | `RESTRICT`-এর মতোই আচরণ করে (MySQL-এ প্রায় একই)  |
+
+
+Interview-এর জন্য সংক্ষিপ্ত উত্তর
+প্রশ্ন: ON DELETE SET NULL কী?
+উত্তর:
+ON DELETE SET NULL হলো একটি Foreign Key Action। Parent Table-এর Row Delete হলে Child Table-এর সংশ্লিষ্ট Foreign Key-এর মান স্বয়ংক্রিয়ভাবে NULL হয়ে যায়, কিন্তু Child Record Delete হয় না।
+
+মনে রাখার শর্টকাট
+* CASCADE → Parent Delete = Child Delete
+* SET NULL → Parent Delete = Child থাকে, Foreign Key = NULL
+* RESTRICT → Parent Delete করতে বাধা দেয়
+
+
+
+************************************************************************************
+
+
+
