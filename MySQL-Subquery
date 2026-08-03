@@ -1,0 +1,212 @@
+MySQL-এ Subquery (সাবকুয়েরি) কী?
+Subquery হলো একটি Query-এর ভিতরে আরেকটি Query। অর্থাৎ, একটি SELECT, INSERT, UPDATE বা DELETE Query-এর মধ্যে আরেকটি Query ব্যবহার করাকে Subquery বলে।
+সহজভাবে বলা যায়,
+
+"একটি Query-এর ফলাফলকে অন্য Query-তে ব্যবহার করাই হলো Subquery।"
+
+সংজ্ঞা
+Subquery হলো এমন একটি SQL Query, যা অন্য একটি SQL Query-এর ভিতরে লেখা হয় এবং যার ফলাফল বাইরের Query ব্যবহার করে।
+
+Syntax:
+
+SELECT column_name
+FROM table_name
+WHERE column_name operator
+(
+    SELECT column_name
+    FROM another_table
+    WHERE condition
+);
+
+উদাহরণ ১: Average Salary-এর চেয়ে বেশি বেতন পাওয়া কর্মচারী
+
+employee টেবিল :
+
+| id | name  | salary |
+| -- | ----- | ------ |
+| 1  | Rahim | 30000  |
+| 2  | Karim | 50000  |
+| 3  | Nila  | 40000  |
+
+
+
+প্রথমে Average Salary বের হবে :
+SELECT AVG(salary)
+FROM employee;
+
+Output:
+40000
+
+
+এখন Average Salary-এর বেশি যাদের বেতন, তাদের দেখাও:
+SELECT name, salary
+FROM employee
+WHERE salary >
+(
+    SELECT AVG(salary)
+    FROM employee
+);
+
+Output:
+name	salary
+Karim	50000
+
+এখানে,
+
+Inner Query (Subquery):::
+SELECT AVG(salary)
+FROM employee;
+
+Outer Query:::
+SELECT name, salary
+FROM employee
+WHERE salary > 40000;
+
+***************************************************************************
+উদাহরণ ২: নির্দিষ্ট Department-এর কর্মচারী
+department :
+| dept_id | dept_name |
+| ------- | --------- |
+| 1       | HR        |
+| 2       | IT        |
+
+
+employee:
+| id | name  | dept_id |
+| -- | ----- | ------- |
+| 1  | Rahim | 1       |
+| 2  | Karim | 2       |
+| 3  | Nila  | 1       |
+
+
+IT বিভাগের কর্মচারীদের বের করো:
+
+SELECT *
+FROM employee
+WHERE dept_id =
+(
+    SELECT dept_id
+    FROM department
+    WHERE dept_name='IT'
+);
+
+Output::
+| id | name  | dept_id |
+| -- | ----- | ------- |
+| 2  | Karim | 2       |
+
+
+*********************************************************************
+Subquery কোথায় ব্যবহার করা যায়?
+
+১. WHERE Clause
+
+SELECT *
+FROM employee
+WHERE salary >
+(
+SELECT AVG(salary)
+FROM employee
+);
+
+
+২. FROM Clause
+
+SELECT AVG(salary)
+FROM
+(
+SELECT salary
+FROM employee
+) AS emp;
+
+নোট: FROM-এ Subquery ব্যবহার করলে Alias (AS emp) দিতে হয়।
+
+
+৩. SELECT Clause
+
+SELECT
+name,
+salary,
+(
+SELECT AVG(salary)
+FROM employee
+) AS average_salary
+FROM employee;
+
+
+***************************************************************************
+Subquery-এর ধরন:
+
+১. Single Row Subquery
+
+একটি মাত্র Row ফেরত দেয়:
+SELECT *
+FROM employee
+WHERE salary >
+(
+SELECT AVG(salary)
+FROM employee
+);
+
+২. Multiple Row Subquery
+
+একাধিক Row ফেরত দেয়:
+SELECT *
+FROM employee
+WHERE dept_id IN
+(
+SELECT dept_id
+FROM department
+);
+
+৩. Correlated Subquery
+
+Outer Query-এর প্রতিটি Row-এর জন্য Inner Query বারবার চলে:
+SELECT e1.name
+FROM employee e1
+WHERE salary >
+(
+SELECT AVG(salary)
+FROM employee e2
+WHERE e1.dept_id=e2.dept_id
+);
+
+
+***************************************************************************
+Subquery-এর সুবিধা:
+
+✅ জটিল Query সহজে লেখা যায়।
+✅ Query আরও পরিষ্কার ও সহজবোধ্য হয়।
+✅ অন্য Query-এর ফলাফল ব্যবহার করা যায়।
+
+Subquery-এর অসুবিধা :
+
+❌ বড় ডেটার ক্ষেত্রে ধীর (Slow) হতে পারে।
+❌ অনেক সময় JOIN ব্যবহার করলে Performance ভালো হয়।
+
+Interview-এর জন্য সংক্ষিপ্ত উত্তর
+প্রশ্ন: Subquery কী?
+উত্তর:
+Subquery হলো একটি SQL Query-এর ভিতরে লেখা আরেকটি SQL Query। Inner Query-এর ফলাফল Outer Query ব্যবহার করে নির্দিষ্ট ডেটা বের করে।
+
+মনে রাখার শর্টকাট :
+* Subquery = Query-এর ভিতরে Query
+* Inner Query আগে Execute হয়
+* তার Result Outer Query ব্যবহার করে
+
+উদাহরণ:
+
+SELECT name
+FROM employee
+WHERE salary >
+(
+SELECT AVG(salary)
+FROM employee
+);
+
+এখানে প্রথমে AVG(salary) বের হবে, তারপর যাদের বেতন Average-এর বেশি, তাদের নাম দেখাবে।
+
+
+*************************************************************************************************
+
+
