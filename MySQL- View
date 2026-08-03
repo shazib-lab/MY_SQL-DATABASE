@@ -1,0 +1,166 @@
+MySQL-এ View (ভিউ) কী?
+
+View হলো MySQL-এর একটি Virtual Table (ভার্চুয়াল টেবিল)। এটি নিজে কোনো ডেটা সংরক্ষণ করে না। বরং একটি SELECT Query সংরক্ষণ করে রাখে। যখন View-তে Query চালানো হয়, 
+তখন মূল টেবিল থেকে সর্বশেষ (Latest) ডেটা দেখায়।
+সংজ্ঞা :
+View হলো এমন একটি ভার্চুয়াল টেবিল, যা এক বা একাধিক টেবিলের SELECT Query-এর ফলাফল দেখায়। 
+
+View তৈরির Syntax :
+CREATE VIEW view_name AS
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;
+
+উদাহরণ :
+ধরি employee নামে একটি টেবিল আছে।
+| id | name  | department | salary |
+| -- | ----- | ---------- | ------ |
+| 1  | Rahim | HR         | 30000  |
+| 2  | Karim | IT         | 45000  |
+| 3  | Nila  | HR         | 35000  |
+
+
+এখন শুধুমাত্র HR বিভাগের কর্মচারীদের জন্য একটি View তৈরি করি।
+CREATE VIEW hr_employee AS
+SELECT id, name, salary
+FROM employee
+WHERE department='HR';
+
+View থেকে ডেটা দেখতে:
+SELECT * FROM hr_employee;
+
+output :
+| id | name  | salary |
+| -- | ----- | ------ |
+| 1  | Rahim | 30000  |
+| 3  | Nila  | 35000  |
+
+View-এর সুবিধা :
+* Complex Query সহজ করে।
+* Security বৃদ্ধি করে (সব কলাম দেখাতে হয় না)।
+* বারবার একই Query লিখতে হয় না।
+* একাধিক টেবিলের ডেটা সহজে দেখানো যায়। 
+
+View Update করা :
+যদি View Simple হয় (একটি টেবিল থেকে তৈরি), তাহলে Update করা যায়।
+
+UPDATE hr_employee
+SET salary = 40000
+WHERE id = 1;
+
+এতে মূল employee টেবিলের ডেটাও পরিবর্তন হবে।
+
+****************************************************************************************
+View পরিবর্তন (Replace):
+
+CREATE OR REPLACE VIEW hr_employee AS
+SELECT id, name, department, salary
+FROM employee
+WHERE department='HR';
+
+****************************************************************************************
+View Delete করা : 
+DROP VIEW hr_employee;
+
+View-এর Definition দেখা : 
+SHOW CREATE VIEW hr_employee;
+
+*********************************************************************
+Table এবং View-এর পার্থক্য:
+| Table                | View                                 |
+| -------------------- | ------------------------------------ |
+| ডেটা সংরক্ষণ করে     | ডেটা সংরক্ষণ করে না                  |
+| Physical Table       | Virtual Table                        |
+| Storage লাগে         | খুব কম Storage লাগে                  |
+| Data Insert করা যায় | সব View-তে Insert/Update করা যায় না |
+| দ্রুত Data Access    | Query অনুযায়ী Data দেখায়           |
+
+
+পরীক্ষা বা ইন্টারভিউর জন্য সংক্ষিপ্ত উত্তর:
+View:
+MySQL-এর View হলো একটি Virtual Table, যা একটি বা একাধিক টেবিলের SELECT Query-এর ফলাফল দেখায়। এটি নিজে কোনো ডেটা সংরক্ষণ করে না; বরং মূল টেবিল থেকে ডেটা এনে প্রদর্শন করে।
+
+এক লাইনে মনে রাখার কৌশল:
+👉 "Table ডেটা রাখে, আর View শুধু ডেটা দেখায়।"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
