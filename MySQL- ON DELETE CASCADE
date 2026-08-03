@@ -1,0 +1,124 @@
+MySQL-এ ON DELETE CASCADE কী?
+ON DELETE CASCADE হলো Foreign Key Constraint-এর একটি Action।
+যখন Parent Table থেকে কোনো Row Delete করা হয়, তখন Child Table-এর সেই Parent-এর সাথে সম্পর্কিত সব Row স্বয়ংক্রিয়ভাবে Delete হয়ে যায়।
+
+সংজ্ঞা :
+ON DELETE CASCADE হলো একটি Foreign Key Action, যেখানে Parent Table-এর কোনো Row Delete হলে Child Table-এর সংশ্লিষ্ট Row-গুলিও স্বয়ংক্রিয়ভাবে Delete হয়ে যায়। 
+
+
+Syntax: 
+
+CREATE TABLE child_table (
+    id INT PRIMARY KEY,
+    parent_id INT,
+    FOREIGN KEY (parent_id)
+    REFERENCES parent_table(id)
+    ON DELETE CASCADE
+);
+
+উদাহরণ:
+Parent Table = Department
+| dept_id | dept_name |
+| ------- | --------- |
+| 1       | HR        |
+| 2       | IT        |
+
+
+Child Table = Employee
+| emp_id | name  | dept_id |
+| ------ | ----- | ------- |
+| 101    | Rahim | 1       |
+| 102    | Karim | 2       |
+| 103    | Nila  | 1       |
+
+
+Foreign Key:
+
+FOREIGN KEY (dept_id)
+REFERENCES department(dept_id)
+ON DELETE CASCADE
+
+
+**********************************************************************
+
+এখন Parent Table থেকে HR Department Delete করি :
+
+DELETE FROM department
+WHERE dept_id = 1;
+
+Delete করার পরে
+Department TABLE :
+| dept_id | dept_name |
+| ------- | --------- |
+| 2       | IT        |
+
+Employee TABLE :
+| dept_id | dept_name |
+| ------- | --------- |
+| 2       | IT        |
+
+👉 Rahim এবং Nila-এর Record-ও Delete হয়ে গেছে, কারণ তারা dept_id = 1-এর সাথে সম্পর্কিত ছিল।
+
+
+***************************************************************
+কখন ব্যবহার করা হয়?
+ON DELETE CASCADE ব্যবহার করা হয় যখন Parent Record Delete হলে তার সাথে সম্পর্কিত Child Record রাখার প্রয়োজন নেই।
+
+উদাহরণ :
+
+* Customer → Orders
+* Department → Employees
+* Blog Post → Comments
+* Category → Products
+
+সুবিধা:
+✅ Child Table-এ অপ্রয়োজনীয় (Orphan) Record থাকে না।
+✅ সম্পর্কিত Data স্বয়ংক্রিয়ভাবে Delete হয়।
+✅ Database-এর Referential Integrity বজায় থাকে।
+
+অসুবিধা:
+❌ ভুল করে Parent Record Delete করলে Child-এর সব Data-ও Delete হয়ে যাবে।
+❌ গুরুত্বপূর্ণ Data থাকলে সতর্কতার সাথে ব্যবহার করতে হবে।
+
+
+
+ON DELETE Action-এর তুলনা:
+| Action                | কী হয়?                                           |
+| --------------------- | ------------------------------------------------- |
+| `ON DELETE CASCADE`   | Parent Delete হলে Child Record-ও Delete হয়       |
+| `ON DELETE SET NULL`  | Parent Delete হলে Child-এর Foreign Key `NULL` হয় |
+| `ON DELETE RESTRICT`  | Child থাকলে Parent Delete করতে দেয় না            |
+| `ON DELETE NO ACTION` | MySQL-এ `RESTRICT`-এর মতো আচরণ করে                |
+
+
+
+Interview-এর জন্য সংক্ষিপ্ত উত্তর
+প্রশ্ন: ON DELETE CASCADE কী?
+উত্তর:
+ON DELETE CASCADE হলো একটি Foreign Key Action। Parent Table-এর কোনো Row Delete হলে Child Table-এর সেই Row-এর সাথে সম্পর্কিত সব Record স্বয়ংক্রিয়ভাবে Delete হয়ে যায়।
+
+
+
+ON DELETE CASCADE বনাম ON DELETE SET NULL:
+
+| `ON DELETE CASCADE`               | `ON DELETE SET NULL`                |
+| --------------------------------- | ----------------------------------- |
+| Child Record Delete হয়           | Child Record থাকে                   |
+| Foreign Key-সহ পুরো Row মুছে যায় | শুধু Foreign Key-এর মান `NULL` হয়  |
+| সম্পর্কিত Data আর থাকে না         | সম্পর্ক ভেঙে যায়, কিন্তু Data থাকে |
+
+
+
+মনে রাখার শর্টকাট:
+* CASCADE = Parent Delete → Child Delete
+* SET NULL = Parent Delete → Child থাকে, Foreign Key = NULL
+* RESTRICT = Parent Delete করতে বাধা দেয়
+
+
+
+
+
+*******************************************************************************************************
+
+
+
