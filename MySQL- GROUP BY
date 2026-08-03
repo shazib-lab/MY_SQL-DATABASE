@@ -1,0 +1,149 @@
+MySQL-এ GROUP BY কী?
+GROUP BY হলো MySQL-এর একটি Clause, যা একই ধরনের (Same Value) ডেটাগুলোকে একসাথে Group করে।
+এটি সাধারণত Aggregate Function (COUNT(), SUM(), AVG(), MAX(), MIN()) এর সাথে ব্যবহার করা হয়।
+
+সংজ্ঞা :
+GROUP BY এমন একটি SQL Clause, যা একই মানের (Same Value) রেকর্ডগুলোকে একত্রিত করে এবং প্রতিটি Group-এর উপর Aggregate Function প্রয়োগ করতে সাহায্য করে।
+
+Syntax: 
+
+SELECT column_name, aggregate_function(column_name)
+FROM table_name
+GROUP BY column_name;
+
+উদাহরণ:
+ধরি employee টেবিলে নিচের ডেটা আছে।
+
+| id | name  | department | salary |
+| -- | ----- | ---------- | ------ |
+| 1  | Rahim | HR         | 30000  |
+| 2  | Karim | IT         | 50000  |
+| 3  | Nila  | HR         | 35000  |
+| 4  | Sohan | IT         | 45000  |
+| 5  | Riya  | Sales      | 40000  |
+
+
+উদাহরণ ১: প্রতিটি Department-এ কতজন Employee আছে 
+
+SELECT department, COUNT(*) AS total_employee
+FROM employee
+GROUP BY department;
+
+Output:
+| department | total_employee |
+| ---------- | -------------: |
+| HR         |              2 |
+| IT         |              2 |
+| Sales      |              1 |
+
+
+উদাহরণ ২: প্রতিটি Department-এর মোট Salary
+
+SELECT department, SUM(salary) AS total_salary
+FROM employee
+GROUP BY department;
+
+Output:
+| department | total_salary |
+| ---------- | -----------: |
+| HR         |        65000 |
+| IT         |        95000 |
+| Sales      |        40000 |
+
+
+উদাহরণ ৩: প্রতিটি Department-এর Average Salary
+
+SELECT department, AVG(salary) AS average_salary
+FROM employee
+GROUP BY department;
+
+Output:
+| department | average_salary |
+| ---------- | -------------: |
+| HR         |          32500 |
+| IT         |          47500 |
+| Sales      |          40000 |
+
+
+উদাহরণ ৪: প্রতিটি Department-এর সর্বোচ্চ Salary
+
+SELECT department, MAX(salary) AS highest_salary
+FROM employee
+GROUP BY department;
+
+উদাহরণ ৫: প্রতিটি Department-এর সর্বনিম্ন Salary
+
+SELECT department, MIN(salary) AS lowest_salary
+FROM employee
+GROUP BY department;
+
+
+
+*********************************************************************************
+GROUP BY + WHERE :
+WHERE আগে Filter করে, তারপর GROUP BY Group তৈরি করে।
+
+SELECT department, COUNT(*) AS total_employee
+FROM employee
+WHERE salary > 35000
+GROUP BY department;
+
+
+GROUP BY + HAVING :
+HAVING Group তৈরি হওয়ার পরে Filter করে।
+
+SELECT department, COUNT(*) AS total_employee
+FROM employee
+GROUP BY department
+HAVING COUNT(*) > 1;
+
+Output:
+| department | total_employee |
+| ---------- | -------------: |
+| HR         |              2 |
+| IT         |              2 |
+
+
+*************************************************************************
+WHERE এবং HAVING-এর পার্থক্য:
+
+| WHERE                                  | HAVING                              |
+| -------------------------------------- | ----------------------------------- |
+| Group হওয়ার আগে Filter করে            | Group হওয়ার পরে Filter করে         |
+| Aggregate Function ব্যবহার করা যায় না | Aggregate Function ব্যবহার করা যায় |
+| Row Filter করে                         | Group Filter করে                    |
+
+GROUP BY-এর সুবিধা:
+
+* একই ধরনের ডেটা একসাথে Group করা যায়।
+* COUNT(), SUM(), AVG(), MAX(), MIN() সহজে ব্যবহার করা যায়।
+* রিপোর্ট তৈরি করতে খুবই উপযোগী।
+
+
+***************************************************************************************************
+Interview-এর জন্য সংক্ষিপ্ত উত্তর
+প্রশ্ন: GROUP BY কী?
+উত্তর:
+GROUP BY হলো MySQL-এর একটি Clause, যা একই মানের রেকর্ডগুলোকে একত্রিত (Group) করে এবং প্রতিটি Group-এর উপর Aggregate Function (COUNT, SUM, AVG, MAX, MIN) প্রয়োগ করতে ব্যবহৃত হয়।
+
+মনে রাখার শর্টকাট :
+
+* GROUP BY = একই ধরনের ডেটা একসাথে Group করা
+* WHERE = Row Filter
+* GROUP BY = Group তৈরি
+* HAVING = Group Filter
+
+সহজ সূত্র*
+SELECT → FROM → WHERE → GROUP BY → HAVING → ORDER BY
+
+এটি SQL Query Execution Order মনে রাখার একটি সহজ উপায়।
+
+
+
+***************************************************************************
+
+
+
+
+
+
