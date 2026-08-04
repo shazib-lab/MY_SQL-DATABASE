@@ -1,0 +1,220 @@
+MySQL-এ Stored Procedure (বাংলায়)
+Stored Procedure হলো MySQL-এর একটি precompiled SQL statement-এর সংগ্রহ, যা Database-এর ভিতরে একবার সংরক্ষণ (store) করা হয় এবং প্রয়োজন অনুযায়ী বারবার চালানো যায়।
+অর্থাৎ, একই SQL কোড বারবার লেখার পরিবর্তে একবার Procedure তৈরি করে পরে শুধু তার নাম কল করলেই কাজ হয়ে যায়।
+
+Stored Procedure কেন ব্যবহার করা হয়?
+✅ একই SQL বারবার লিখতে হয় না।
+✅ কোড পুনঃব্যবহার (Reusability) করা যায়।
+✅ বড় Query দ্রুত Execute হতে পারে।
+✅ Database-এর Business Logic সংরক্ষণ করা যায়।
+✅ Maintenance সহজ হয়।
+
+Syntax:
+
+DELIMITER $$
+CREATE PROCEDURE procedure_name()
+BEGIN
+    SQL Statements;
+END $$
+DELIMITER ;
+
+
+*********************************************************************
+Example 1: সব Employee দেখানো
+ধরি একটি Table আছে:
+
+| id | name  | salary |
+| -- | ----- | ------ |
+| 1  | Rahim | 25000  |
+| 2  | Karim | 30000  |
+| 3  | Hasan | 28000  |
+
+
+Procedure তৈরি করি :
+
+DELIMITER $$
+CREATE PROCEDURE ShowEmployee()
+BEGIN
+    SELECT * FROM employee;
+END $$
+DELIMITER ;
+
+Procedure Call:
+
+CALL ShowEmployee();
+
+Output:
+| id | name  | salary |
+| -- | ----- | ------ |
+| 1  | Rahim | 25000  |
+| 2  | Karim | 30000  |
+| 3  | Hasan | 28000  |
+
+
+**************************************************************************
+Example 2: Parameter ব্যবহার
+
+কোন নির্দিষ্ট Employee দেখাতে চাই :
+
+DELIMITER $$
+CREATE PROCEDURE EmployeeInfo(IN empid INT)
+BEGIN
+      SELECT * FROM employee
+      WHERE id = empid;
+END $$
+DELIMITER ;
+
+Call:
+CALL EmployeeInfo(2);
+
+Output:
+| id | name  | salary |
+| -- | ----- | ------ |
+| 2  | Karim | 30000  |
+
+
+*****************************************************************************
+IN Parameter:
+
+শুধু Input নেওয়ার জন্য ব্যবহার হয়:
+
+CREATE PROCEDURE demo(IN x INT)
+
+
+OUT Parameter:
+Procedure থেকে Value Return করার জন্য।
+
+Example:
+DELIMITER $$
+CREATE PROCEDURE TotalEmployee(OUT total INT)
+BEGIN
+    SELECT COUNT(*) INTO total
+    FROM employee;
+END $$
+DELIMITER ;
+
+Call:
+
+CALL TotalEmployee(@t);
+SELECT @t;
+
+Output:
+3
+
+*********************************************************
+INOUT Parameter:
+একই Parameter Input এবং Output—দুই কাজেই ব্যবহৃত হয়।
+
+Example:
+DELIMITER $$
+CREATE PROCEDURE DoubleNumber(INOUT num INT)
+BEGIN
+    SET num = num * 2;
+END $$
+DELIMITER ;
+
+Call:
+
+SET @n = 10;
+CALL DoubleNumber(@n);
+SELECT @n;
+
+Output:
+20
+
+
+*******************************************************
+UPDATE করার Procedure:
+
+DELIMITER $$
+CREATE PROCEDURE IncreaseSalary(
+IN empid INT,
+IN amount DECIMAL(10,2)
+)
+BEGIN
+    UPDATE employee
+    SET salary = salary + amount
+    WHERE id = empid;
+END $$
+DELIMITER ;
+
+Call:
+
+CALL IncreaseSalary(1,5000);
+
+
+**************************************************************
+Procedure Delete করা:
+
+DROP PROCEDURE procedure_name;
+
+Example:
+DROP PROCEDURE ShowEmployee;
+
+
+***************************************************************
+সব Procedure দেখার উপায়:
+
+SHOW PROCEDURE STATUS;
+
+অথবা নির্দিষ্ট Database-এর জন্য:
+
+SHOW PROCEDURE STATUS
+WHERE Db = 'database_name';
+
+
+
+********************************************************************
+Procedure-এর কোড দেখার উপায়:
+
+SHOW CREATE PROCEDURE procedure_name;
+
+Example:
+SHOW CREATE PROCEDURE ShowEmployee;
+
+
+*****************************************************************
+Stored Procedure-এর সুবিধা:
+
+✔ একই কোড বারবার ব্যবহার করা যায়।
+✔ Query দ্রুত Execute হতে পারে।
+✔ Database-এর Logic কেন্দ্রীভূত রাখা যায়।
+✔ Network Traffic কমে (একবার CALL করলেই একাধিক SQL চলে)।
+✔ Maintenance সহজ হয়।
+✔ নিরাপত্তা (Security) বাড়ানো যায়, কারণ নির্দিষ্ট Procedure ব্যবহারের অনুমতি দেওয়া যায়। 
+
+অসুবিধা:
+
+❌ Debug করা তুলনামূলক কঠিন।
+❌ Database-এর উপর নির্ভরশীল (Portability কম)।
+❌ বড় Procedure হলে Maintain করা কঠিন হতে পারে।
+
+
+
+Stored Procedure বনাম Function:
+
+| Stored Procedure                                 | Function                                                       |
+| ------------------------------------------------ | -------------------------------------------------------------- |
+| `CALL` দিয়ে চালানো হয়                          | SQL Expression-এর মধ্যে ব্যবহার করা যায়                       |
+| একাধিক Result Set দিতে পারে                      | সাধারণত একটি Value Return করে                                  |
+| `IN`, `OUT`, `INOUT` Parameter সমর্থন করে        | সাধারণত `IN` Parameter ব্যবহার করে                             |
+| Data পরিবর্তন (INSERT, UPDATE, DELETE) করতে পারে | সাধারণত একটি নির্দিষ্ট মান গণনা ও Return করার জন্য ব্যবহৃত হয় |
+
+
+
+
+পরীক্ষার জন্য গুরুত্বপূর্ণ প্রশ্ন:
+
+* Stored Procedure কী?
+* Stored Procedure-এর সুবিধা লিখ।
+* IN, OUT এবং INOUT Parameter-এর পার্থক্য কী?
+* Stored Procedure কীভাবে তৈরি ও Call করা হয়?
+* SHOW CREATE PROCEDURE এবং DROP PROCEDURE-এর ব্যবহার কী?
+
+
+
+
+*******************************************************************************
+
+
+
