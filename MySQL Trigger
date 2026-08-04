@@ -1,0 +1,240 @@
+MySQL Trigger (বাংলায়)
+Trigger কী?
+Trigger হলো MySQL-এর একটি বিশেষ ধরনের Database Object, যা কোনো নির্দিষ্ট Event (যেমন INSERT, UPDATE, DELETE) ঘটলে স্বয়ংক্রিয়ভাবে (Automatically) Execute হয়।
+
+অর্থাৎ, Trigger-কে আলাদা করে CALL করতে হয় না। টেবিলে কোনো পরিবর্তন হলেই এটি নিজে থেকেই চলে।
+
+
+Trigger কেন ব্যবহার করা হয়?
+
+✅ Automatic কাজ করার জন্য
+✅ Audit Log সংরক্ষণ করার জন্য
+✅ Backup তৈরি করার জন্য
+✅ Data Validation করার জন্য
+✅ Business Rules প্রয়োগ করার জন্য
+
+Trigger-এর Syntax:
+
+DELIMITER $$
+CREATE TRIGGER trigger_name
+{BEFORE | AFTER}
+{INSERT | UPDATE | DELETE}
+ON table_name
+FOR EACH ROW
+BEGIN
+    SQL Statements;
+END $$
+DELIMITER ;
+
+
+*******************************************************
+
+BEFORE এবং AFTER:
+
+| Trigger | কাজ                                              |
+| ------- | ------------------------------------------------ |
+| BEFORE  | Data Insert/Update/Delete হওয়ার আগে Execute হয় |
+| AFTER   | Data Insert/Update/Delete হওয়ার পরে Execute হয় |
+
+Trigger Events:
+| Event  | কখন চলে                |
+| ------ | ---------------------- |
+| INSERT | নতুন Record Insert হলে |
+| UPDATE | Record Update হলে      |
+| DELETE | Record Delete হলে      |
+
+
+*******************************************************
+Example Table
+employee:
+| id | name  | salary |
+| -- | ----- | ------ |
+| 1  | Rahim | 25000  |
+| 2  | Karim | 30000  |
+
+আরেকটি Log Table
+
+employee_log:
+| id | message |
+| -- | ------- |
+
+
+******************************************************
+Example 1: AFTER INSERT Trigger:
+
+DELIMITER $$
+CREATE TRIGGER employee_insert
+AFTER INSERT
+ON employee
+FOR EACH ROW
+BEGIN
+    INSERT INTO employee_log(message)
+    VALUES(CONCAT('New Employee Added: ', NEW.name));
+END $$
+DELIMITER ;
+
+Employee Insert করি:
+
+INSERT INTO employee(name,salary)
+VALUES('Hasan',28000);
+
+Log Table:
+| id | message                   |
+| -- | ------------------------- |
+| 1  | New Employee Added: Hasan |
+
+
+*************************************************************
+NEW Keyword:
+INSERT এবং UPDATE Trigger-এ নতুন Data Access করার জন্য NEW ব্যবহার করা হয়।
+
+Example:
+NEW.name
+NEW.salary
+
+**************************************************************
+Example 2: AFTER DELETE Trigger:
+
+DELIMITER $$
+CREATE TRIGGER employee_delete
+AFTER DELETE
+ON employee
+FOR EACH ROW
+BEGIN
+    INSERT INTO employee_log(message)
+    VALUES(CONCAT('Deleted Employee: ', OLD.name));
+END $$
+DELIMITER ;
+
+Delete করি:
+DELETE FROM employee
+WHERE id=2;
+
+Output:
+Deleted Employee: Karim
+
+
+**************************************************************
+OLD Keyword:
+DELETE এবং UPDATE Trigger-এ পুরোনো Data Access করার জন্য OLD ব্যবহার করা হয়।
+
+Example:
+
+OLD.name
+OLD.salary
+
+
+********************************************************
+Example 3: BEFORE UPDATE Trigger
+
+যদি Salary 10000-এর কম হয় তাহলে Update করতে দিব না।
+
+DELIMITER $$
+
+CREATE TRIGGER check_salary
+BEFORE UPDATE
+ON employee
+FOR EACH ROW
+
+BEGIN
+    IF NEW.salary < 10000 THEN
+
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT='Salary cannot be less than 10000';
+END IF;
+
+END $$
+DELIMITER ;
+
+Update করার চেষ্টা :
+
+UPDATE employee
+SET salary=5000
+WHERE id=1;
+
+Output:
+
+ERROR:
+Salary cannot be less than 10000
+
+
+***********************************************************
+UPDATE Trigger-এ OLD এবং NEW:
+
+CREATE TRIGGER salary_update
+AFTER UPDATE
+ON employee
+FOR EACH ROW
+BEGIN
+
+INSERT INTO employee_log(message)
+VALUES(
+
+CONCAT(
+'Salary Changed from ',
+OLD.salary,
+' to ',
+NEW.salary
+
+)
+
+);
+
+END;
+
+
+Trigger Delete করা:
+
+DROP TRIGGER trigger_name;
+
+Example:
+DROP TRIGGER employee_insert;
+
+
+সব Trigger দেখার উপায়:
+SHOW TRIGGERS;
+
+নির্দিষ্ট Trigger-এর কোড দেখার উপায়:
+SHOW CREATE TRIGGER employee_insert;
+
+
+*************************************************
+Trigger-এর সুবিধা:
+
+✔ Automatic Execute হয়।
+✔ Data Validation করা যায়।
+✔ Audit Log রাখা যায়।
+✔ Business Rules প্রয়োগ করা যায়।
+✔ Backup বা History সংরক্ষণ করা যায়।
+✔ Data Integrity বজায় রাখতে সাহায্য করে। 
+
+Trigger-এর অসুবিধা:
+
+❌ Debug করা কঠিন।
+❌ বেশি Trigger থাকলে Performance কমতে পারে।
+❌ Trigger Background-এ চলে, তাই অনেক সময় বোঝা কঠিন কী ঘটছে।
+❌ ভুল Trigger Data-এর উপর অনাকাঙ্ক্ষিত প্রভাব ফেলতে পারে।
+
+
+
+Trigger বনাম Stored Procedure:
+| Trigger                                          | Stored Procedure              |
+| ------------------------------------------------ | ----------------------------- |
+| স্বয়ংক্রিয়ভাবে Execute হয়                     | `CALL` করে চালাতে হয়         |
+| `INSERT`, `UPDATE`, `DELETE` Event-এর সাথে যুক্ত | যেকোনো সময় Call করা যায়     |
+| User সরাসরি Execute করতে পারে না                 | User সরাসরি Execute করতে পারে |
+| Event-Driven                                     | User-Driven                   |
+
+
+পরীক্ষার জন্য গুরুত্বপূর্ণ প্রশ্ন
+Trigger কী?
+* BEFORE এবং AFTER Trigger-এর পার্থক্য লিখ।
+* NEW এবং OLD Keyword-এর ব্যবহার ব্যাখ্যা কর।
+* Trigger কীভাবে তৈরি, দেখানো (SHOW TRIGGERS) এবং Delete (DROP TRIGGER) করা হয়?
+* Trigger এবং Stored Procedure-এর মধ্যে পার্থক্য লিখ।
+
+
+********************************************************************************************************
+
+
+
